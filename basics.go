@@ -9,19 +9,36 @@ import (
 )
 
 func main() {
-	print("Set 1\n")
+	fmt.Printf("Set 1\n")
 	/**************************************/
-	print("Convert hex to base64\n")
+	fmt.Printf("Convert hex to base64\n")
 	const s = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d"
 	fmt.Printf("%v\n", hex2base64(s))
 	/**************************************/
-	print("Fixed XOR\n")
+	fmt.Printf("Fixed XOR\n")
 	const s2 = "1c0111001f010100061a024b53535009181c"
 	const xor = "686974207468652062756c6c277320657965"
 	fmt.Printf("%x\n", fixedXOR(s2, xor))
 	/**************************************/
-	print("Single-byte XOR cipher\n")
+	fmt.Printf("Single-byte XOR cipher\n")
 	const s3 = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
+	var char = []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
+
+	// XOR each character
+	for i, _ := range char {
+		// copy original string into result
+		result, err := hex.DecodeString(s3)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// XOR result with single character
+		for j, _ := range result {
+			result[j] = result[j] ^ char[i]
+		}
+		fmt.Printf("%+q\n", result)
+	}
+
 }
 
 /* Converts a hex string to base64
