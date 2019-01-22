@@ -1,4 +1,4 @@
-// cryptopals.com/sets/1
+// cryptopals.com/sets/2
 package main
 
 import (
@@ -21,22 +21,45 @@ func main() {
 	fmt.Printf("%x\n", fixedXOR(s2, xor))
 	/**************************************/
 	fmt.Printf("Single-byte XOR cipher\n")
-	const s3 = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
+	const s3 = "1b37373331363f78151b7f2b783431334d78397828372d363c78373e783a393b3736"
 	var char = []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
+	var highscore = 0
+	var score = 0
 
-	// XOR each character
 	for i, _ := range char {
-		// copy original string into result
+
+		// reset score
+		score = 0
+
+		// copy cipher text into result
 		result, err := hex.DecodeString(s3)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		// XOR result with single character
+		// XOR result with the current character
 		for j, _ := range result {
 			result[j] = result[j] ^ char[i]
 		}
-		fmt.Printf("%+q\n", result)
+
+		// score result based on letter frequency
+		for i := 0; i < len(result); i++ {
+
+			if result[i] == byte('e') ||
+				result[i] == byte('t') ||
+				result[i] == byte('a') ||
+				result[i] == byte('o') ||
+				result[i] == byte('n') {
+				score++
+			}
+
+		}
+
+		if score > highscore {
+			highscore = score
+			fmt.Printf("%q : %v : %s\n", char[i], highscore, result)
+		}
+
 	}
 
 }
