@@ -45,11 +45,16 @@ func main() {
 		// score result based on letter frequency
 		for i := 0; i < len(result); i++ {
 
-			if result[i] == byte('e') ||
-				result[i] == byte('t') ||
-				result[i] == byte('a') ||
-				result[i] == byte('o') ||
-				result[i] == byte('n') {
+			if result[i] == byte('e') || result[i] == byte('E') ||
+				result[i] == byte('a') || result[i] == byte('A') ||
+				result[i] == byte('t') || result[i] == byte('T') ||
+				result[i] == byte('o') || result[i] == byte('O') ||
+				result[i] == byte('n') || result[i] == byte('N') ||
+				result[i] == byte('s') || result[i] == byte('S') ||
+				result[i] == byte('h') || result[i] == byte('H') ||
+				result[i] == byte('r') || result[i] == byte('R') ||
+				result[i] == byte('l') || result[i] == byte('L') ||
+				result[i] == byte('u') || result[i] == byte('U') {
 				score++
 			}
 
