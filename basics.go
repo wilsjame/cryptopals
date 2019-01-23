@@ -1,4 +1,4 @@
-// cryptopals.com/sets/2
+// cryptopals.com
 package main
 
 import (
@@ -10,29 +10,47 @@ import (
 
 func main() {
 	fmt.Printf("Set 1\n")
-	/**************************************/
+
+	fmt.Printf("/**************************************/\n")
 	fmt.Printf("Convert hex to base64\n")
 	const s = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d"
 	fmt.Printf("%v\n", hex2base64(s))
-	/**************************************/
+
+	fmt.Printf("/**************************************/\n")
 	fmt.Printf("Fixed XOR\n")
 	const s2 = "1c0111001f010100061a024b53535009181c"
 	const xor = "686974207468652062756c6c277320657965"
 	fmt.Printf("%x\n", fixedXOR(s2, xor))
-	/**************************************/
+
+	fmt.Printf("/**************************************/\n")
 	fmt.Printf("Single-byte XOR cipher\n")
 	const s3 = "1b37373331363f78151b7f2b783431334d78397828372d363c78373e783a393b3736"
+	score, key, message := byteXORcipher(s3)
+	fmt.Printf("%v : %q : %+q\n", score, key, message)
+
+	fmt.Printf("/**************************************/\n")
+	fmt.Printf("Detect single-character XOR\n")
+
+}
+
+/* Takes a hex string that has been XOR'd
+ * against a single character, finds the key
+ * by scoring the English plaintext using
+ * character frequency as a metric.
+ * Returns the score, key, and decrpyted message. */
+func byteXORcipher(s string) (int, byte, []byte) {
 	var char = []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
+	var message []byte
+	var key byte
 	var highscore = 0
-	var score = 0
 
 	for i, _ := range char {
 
 		// reset score
-		score = 0
+		score := 0
 
 		// copy cipher text into result
-		result, err := hex.DecodeString(s3)
+		result, err := hex.DecodeString(s)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -63,10 +81,15 @@ func main() {
 
 		if score > highscore {
 			highscore = score
-			fmt.Printf("%q : %v : %s\n", char[i], highscore, result)
+			key = char[i]
+			message = result
+			// debug
+			//fmt.Printf("%v : %q : %+q\n", highscore, key, message)
 		}
 
 	}
+
+	return highscore, key, message
 
 }
 
@@ -85,7 +108,7 @@ func hex2base64(s string) string {
 }
 
 /* XOR's two equal-length hex strings
- * and returns the byte slice result */
+ * and returns the byte slice result. */
 func fixedXOR(s1, s2 string) []byte {
 	var xor []byte
 	var raw_1 []byte
