@@ -53,6 +53,7 @@ func main() {
 				result[i] == byte('s') || result[i] == byte('S') ||
 				result[i] == byte('h') || result[i] == byte('H') ||
 				result[i] == byte('r') || result[i] == byte('R') ||
+				result[i] == byte('d') || result[i] == byte('D') ||
 				result[i] == byte('l') || result[i] == byte('L') ||
 				result[i] == byte('u') || result[i] == byte('U') {
 				score++
