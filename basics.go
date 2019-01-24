@@ -2,10 +2,12 @@
 package main
 
 import (
+	"bufio"
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
 	"log"
+	"os"
 )
 
 func main() {
@@ -34,12 +36,12 @@ func main() {
 }
 
 /* Takes a hex string that has been XOR'd
- * against a single character, finds the key
- * by scoring the English plaintext using
- * character frequency as a metric.
+ * against a single character (i.e. key).
+ * Finds the key by scoring the English plaintext
+ * using character frequency as a metric.
  * Returns the score, key, and decrpyted message. */
 func byteXORcipher(s string) (int, byte, []byte) {
-	var char = []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
+	var char = []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789") // add more keys if necessary
 	var message []byte
 	var key byte
 	var highscore = 0
@@ -62,19 +64,149 @@ func byteXORcipher(s string) (int, byte, []byte) {
 
 		// score result based on letter frequency
 		for i := 0; i < len(result); i++ {
+			letter := result[i]
 
-			if result[i] == byte('e') || result[i] == byte('E') ||
-				result[i] == byte('a') || result[i] == byte('A') ||
-				result[i] == byte('t') || result[i] == byte('T') ||
-				result[i] == byte('o') || result[i] == byte('O') ||
-				result[i] == byte('n') || result[i] == byte('N') ||
-				result[i] == byte('s') || result[i] == byte('S') ||
-				result[i] == byte('h') || result[i] == byte('H') ||
-				result[i] == byte('r') || result[i] == byte('R') ||
-				result[i] == byte('d') || result[i] == byte('D') ||
-				result[i] == byte('l') || result[i] == byte('L') ||
-				result[i] == byte('u') || result[i] == byte('U') {
+			// EATON SHRDLU
+			if letter == byte('e') || letter == byte('E') ||
+				letter == byte('a') || letter == byte('A') ||
+				letter == byte('t') || letter == byte('T') ||
+				letter == byte('o') || letter == byte('O') ||
+				letter == byte('n') || letter == byte('N') ||
+				letter == byte('s') || letter == byte('S') ||
+				letter == byte('h') || letter == byte('H') ||
+				letter == byte('r') || letter == byte('R') ||
+				letter == byte('d') || letter == byte('D') ||
+				letter == byte('l') || letter == byte('L') ||
+				letter == byte('u') || letter == byte('U') {
 				score++
+			}
+
+			// TH HE AN RE ER IN ON AT ND ST ES EN OF TE ED OR TI HI AS TO
+			// LL EE SS OO TT FF RR NN PP CC
+			if i < len(result)-1 {
+				nextLetter := result[i+1]
+
+				if letter == byte('t') || letter == byte('T') {
+
+					if nextLetter == byte('h') || nextLetter == byte('H') ||
+						nextLetter == byte('e') || nextLetter == byte('E') ||
+						nextLetter == byte('i') || nextLetter == byte('I') ||
+						nextLetter == byte('o') || nextLetter == byte('O') ||
+						nextLetter == byte('t') || nextLetter == byte('T') {
+						score++
+					}
+
+				}
+
+				if letter == byte('h') || letter == byte('H') {
+
+					if nextLetter == byte('e') || nextLetter == byte('E') ||
+						nextLetter == byte('i') || nextLetter == byte('I') {
+						score++
+					}
+
+				}
+
+				if letter == byte('a') || letter == byte('A') {
+
+					if nextLetter == byte('n') || nextLetter == byte('N') ||
+						nextLetter == byte('t') || nextLetter == byte('T') ||
+						nextLetter == byte('s') || nextLetter == byte('S') {
+						score++
+					}
+
+				}
+
+				if letter == byte('r') || letter == byte('R') {
+
+					if nextLetter == byte('e') || nextLetter == byte('E') ||
+						nextLetter == byte('r') || nextLetter == byte('R') {
+						score++
+					}
+
+				}
+
+				if letter == byte('e') || letter == byte('E') {
+
+					if nextLetter == byte('r') || nextLetter == byte('R') ||
+						nextLetter == byte('s') || nextLetter == byte('S') ||
+						nextLetter == byte('n') || nextLetter == byte('N') ||
+						nextLetter == byte('d') || nextLetter == byte('D') ||
+						nextLetter == byte('e') || nextLetter == byte('E') {
+						score++
+					}
+
+				}
+
+				if letter == byte('i') || letter == byte('I') {
+
+					if nextLetter == byte('n') || nextLetter == byte('N') {
+						score++
+					}
+
+				}
+
+				if letter == byte('o') || letter == byte('O') {
+
+					if nextLetter == byte('n') || nextLetter == byte('N') ||
+						nextLetter == byte('f') || nextLetter == byte('F') ||
+						nextLetter == byte('r') || nextLetter == byte('R') ||
+						nextLetter == byte('o') || nextLetter == byte('O') {
+						score++
+					}
+
+				}
+
+				if letter == byte('n') || letter == byte('N') {
+
+					if nextLetter == byte('d') || nextLetter == byte('D') ||
+						nextLetter == byte('n') || nextLetter == byte('N') {
+						score++
+					}
+
+				}
+
+				if letter == byte('s') || letter == byte('S') {
+
+					if nextLetter == byte('t') || nextLetter == byte('T') ||
+						nextLetter == byte('s') || nextLetter == byte('S') {
+						score++
+					}
+
+				}
+
+				if letter == byte('l') || letter == byte('L') {
+
+					if nextLetter == byte('l') || nextLetter == byte('L') {
+						score++
+					}
+
+				}
+
+				if letter == byte('f') || letter == byte('F') {
+
+					if nextLetter == byte('f') || nextLetter == byte('F') {
+						score++
+					}
+
+				}
+
+				if letter == byte('p') || letter == byte('P') {
+
+					if nextLetter == byte('p') || nextLetter == byte('P') {
+						score++
+					}
+
+				}
+
+				if letter == byte('c') || letter == byte('C') {
+
+					if nextLetter == byte('c') || nextLetter == byte('C') {
+						score++
+					}
+
+				}
+
 			}
 
 		}
@@ -84,7 +216,7 @@ func byteXORcipher(s string) (int, byte, []byte) {
 			key = char[i]
 			message = result
 			// debug
-			//fmt.Printf("%v : %q : %+q\n", highscore, key, message)
+			//fmt.Printf(" %v : %q : %+q\n", highscore, key, message)
 		}
 
 	}
@@ -128,4 +260,5 @@ func fixedXOR(s1, s2 string) []byte {
 	}
 
 	return xor
+
 }
