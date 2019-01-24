@@ -32,6 +32,19 @@ func main() {
 
 	fmt.Printf("/**************************************/\n")
 	fmt.Printf("Detect single-character XOR\n")
+	f, err := os.Open("4.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	scanner := bufio.NewScanner(f)
+
+	// loop over all line in the file
+	for scanner.Scan() {
+		//TODO show highest scores first
+		score, key, message := byteXORcipher(scanner.Text())
+		fmt.Printf("%v : %q : %+q\n", score, key, message)
+	}
 
 }
 
