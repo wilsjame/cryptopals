@@ -10,24 +10,26 @@ import (
 	"os"
 )
 
+var s string
+
 func main() {
 	fmt.Printf("Set 1\n")
 
 	fmt.Printf("/**************************************/\n")
 	fmt.Printf("Convert hex to base64\n")
-	const s = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d"
+	s = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d"
 	fmt.Printf("%v\n", hex2base64(s))
 
 	fmt.Printf("/**************************************/\n")
 	fmt.Printf("Fixed XOR\n")
-	const s2 = "1c0111001f010100061a024b53535009181c"
+	s = "1c0111001f010100061a024b53535009181c"
 	const xor = "686974207468652062756c6c277320657965"
-	fmt.Printf("%x\n", fixedXOR(s2, xor))
+	fmt.Printf("%x\n", fixedXOR(s, xor))
 
 	fmt.Printf("/**************************************/\n")
 	fmt.Printf("Single-byte XOR cipher\n")
-	const s3 = "1b37373331363f78151b7f2b783431334d78397828372d363c78373e783a393b3736"
-	score, key, message := byteXORcipher(s3)
+	s = "1b37373331363f78151b7f2b783431334d78397828372d363c78373e783a393b3736"
+	score, key, message := byteXORcipher(s)
 	fmt.Printf("%v : %q : %+q\n", score, key, message)
 
 	fmt.Printf("/**************************************/\n")
@@ -45,6 +47,32 @@ func main() {
 		score, key, message := byteXORcipher(scanner.Text())
 		fmt.Printf("%v : %q : %+q\n", score, key, message)
 	}
+
+	fmt.Printf("/**************************************/\n")
+	fmt.Printf("Implementing repeating-key XOR\n")
+	s = "Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal"
+	sol := "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f"
+
+	if hex.EncodeToString(XORencrypt("ICE", s)) == sol {
+		fmt.Printf("equal!\n")
+	} else {
+		fmt.Printf("no match :(\n")
+	}
+
+}
+
+/* Encrypts a string using repeating-key XOR.
+ * Returns byte slice result. */
+func XORencrypt(key, s string) []byte {
+	k := []byte(key) // key
+	t := []byte(s)   // plaintext
+	var ct []byte    // ciphertext
+
+	for i, _ := range t {
+		ct = append(ct, k[i%len(k)]^t[i])
+	}
+
+	return ct
 
 }
 
