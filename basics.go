@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"log"
+	"math/bits"
 	"os"
 )
 
@@ -58,6 +59,27 @@ func main() {
 	} else {
 		fmt.Printf("no match :(\n")
 	}
+
+	fmt.Printf("/**************************************/\n")
+	fmt.Printf("Break repeating-key XOR\n")
+	fmt.Printf("Hamming distance %v\n", hammingD("this is a test", "wokka wokka!!!"))
+
+}
+
+/* Computes the Hamming distance between
+ * two strings (i.e. the number of differing
+ * bits). */
+func hammingD(s1, s2 string) int {
+	var hd = 0
+	var b1 = []byte(s1)
+	var b2 = []byte(s2)
+
+	for i, _ := range b1 {
+		// XOR and count set bits
+		hd += bits.OnesCount(uint(b1[i] ^ b2[i]))
+	}
+
+	return hd
 
 }
 
